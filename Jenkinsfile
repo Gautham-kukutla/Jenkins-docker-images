@@ -13,11 +13,9 @@ pipeline{
         }
         stage('Build Docker Image') {
             steps {
-              withCredentials([string(credentialsId: 'dockersec', variable: 'dockerpwd')]) {
                   sh 'docker build -t gauthamkukutla/myrepo1 .'
                 }
             }
-        }
         stage('Deploy Docker Image') {
             steps {
                 script {
