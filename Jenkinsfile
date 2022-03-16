@@ -13,18 +13,18 @@ pipeline{
         }
         stage('Build Docker Image') {
             steps {
-              withCredentials([usernamePassword(credentialsId: 'dockerup', passwordVariable: 'dockerpwd', usernameVariable: 'dockerusrn')]) {
-                  sh "docker build -t gauthamkukutla/myrepo1 ."
+              withCredentials([string(credentialsId: 'dockersec', variable: 'dockerpwd')]) {
+                  sh 'docker build -t gauthamkukutla/myrepo1 .'
                 }
             }
         }
         stage('Deploy Docker Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerup', passwordVariable: 'dockerpwd', usernameVariable: 'dockerusrn')]) {
-                        sh "docker login -u ${dockerusrn} -p ${dockerpwd}"
+                   withCredentials([string(credentialsId: 'dockersec', variable: 'dockerpwd')]) {
+                        sh "docker login -u gauthamkukutla -p ${dockerpwd}"
 }
-                    sh "docker push ${dockerusrn}/myrepo1"
+                    sh 'docker push gauthamkukutla/myrepo1'
                 }
             }
         }
