@@ -14,7 +14,7 @@ pipeline{
         stage('Build Docker Image') {
             steps {
               withCredentials([usernamePassword(credentialsId: 'dockerup', passwordVariable: 'dockerpwd', usernameVariable: 'dockerusrn')]) {
-                  sh "docker build -t ${dockerusrn}/myrepo1 ."
+                  sh "docker build -t gauthamkukutla/myrepo1 ."
                 }
             }
         }
