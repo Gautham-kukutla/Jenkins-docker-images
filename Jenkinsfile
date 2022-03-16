@@ -1,30 +1,30 @@
 pipeline{
     agent any
     tools { 
-        maven 'Apache Maven 3.6.0'
+        maven 'Apache Maven 3.6.3'
     }
     stages {
         stage('Build Maven') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'gittoken', url: 'https://github.com/Ray-Shubham/jenkins-docker-example.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'gittoken', url: 'https://github.com/Gautham-kukutla/jenkins-docker-example.git']]])
                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
 
             }
         }
         stage('Build Docker Image') {
             steps {
-                script {
-                  sh 'docker build -t 646504/my-app-1.0 .'
+              withCredentials([usernamePassword(credentialsId: 'dockerup', passwordVariable: 'dockerpwd', usernameVariable: 'dockerusrn')]) {
+                  sh "docker build -t ${dockerusrn}/myrepo1 ."
                 }
             }
         }
         stage('Deploy Docker Image') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: '646504', variable: 'dockerpwd')]) {
-                        sh 'docker login -u 646504 -p ${dockerpwd}'
+                    withCredentials([usernamePassword(credentialsId: 'dockerup', passwordVariable: 'dockerpwd', usernameVariable: 'dockerusrn')]) {
+                        sh "docker login -u ${dockerusrn} -p ${dockerpwd}"
 }
-                    sh 'docker push 646504/my-app-1.0'
+                    sh "docker push ${dockerusrn}/myrepo1"
                 }
             }
         }
